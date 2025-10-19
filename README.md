@@ -21,4 +21,4 @@
 📧 **My Discord:** `aukvary`
 
 **Community Server:**  
-[![Discord](https://img.shields.io/discord/123456789012345678?color=5865F2&label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/hsAMzvYrFX)
+[![Discord Server](https://img.shields.io/badge/Discord-Duck%20Channel%20[5]%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=5865F2)](https://discord.gg/hsAMzvYrFX)
