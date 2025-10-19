@@ -16,9 +16,12 @@
 - 🚧 Adding Roslyn hot reload
 
 ***
-#💡 Want to help?
 
-📧 **My Discord:** `aukvary`
+# 💡 Want to help?
 
-**Community Server:**  
-[![Discord Server](https://img.shields.io/badge/Discord-Duck%20Channel%20[5]%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=5865F2)](https://discord.gg/hsAMzvYrFX)
+<div align="center">
+
+[![Discord](https://img.shields.io/badge/Discord-aukvary-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/675888930725298219)
+[![Discord Server](https://img.shields.io/badge/Duck_Channel_[5]-Join_Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/hsAMzvYrFX)
+
+</div>
