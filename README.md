@@ -1,8 +1,24 @@
-🦆 Hyper User Interface for Duck Game
-https://img.shields.io/github/downloads/YourUsername/HyperUserInterface/total?color=blue&label=Total%2520Downloads&style=for-the-badge
-https://img.shields.io/github/v/release/YourUsername/HyperUserInterface?color=green&label=Latest%2520Release&sort=semver&style=for-the-badge
-https://img.shields.io/badge/Duck%2520Game-1.1%252B-informational?style=for-the-badge
+<div align="center">
 
-✨ Особенности
-- hot relaod with roslyn
-- ecs achitecture 
+# 🦆 Hyper User Interface
+
+**An ECS UI library for Duck Game**  
+*Currently in early development - expect bugs and missing features!*
+
+</div>
+
+***
+
+# 🔬 Development Notice
+
+### What's In Progress:
+- 🚧 Creating an ECS architecture
+- 🚧 Adding Roslyn hot reload
+
+***
+#💡 Want to help?
+
+📧 **My Discord:** `aukvary`
+
+**Community Server:**  
+[![Discord](https://img.shields.io/discord/123456789012345678?color=5865F2&label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/hsAMzvYrFX)
