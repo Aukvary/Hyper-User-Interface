@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace HUI;
 
@@ -37,8 +38,13 @@ public class EcsWorld
     private Queue<int> _recycleEntities;
 
     private List<IEcsPool> _pools;
+    private int _poolsDenseSize;
+    private Dictionary<Type, IEcsPool> _poolHashs;
 
-    private Dictionary<Type, EcsPool> _poolHashs;
+    private List<EcsFilter> _filtres;
+    private Dictionary<int, EcsFilter> _filerHashes;
+
+    private List<Mask> _masks;
 
     public EcsWorld()
     {
@@ -51,10 +57,57 @@ public class EcsWorld
         _recycleEntities = new(Config.RecycledEntitiesDefault);
 
         _pools = new(Config.PoolsDefault);
-        _poolHashs = new(Config.PoolsDefault)
+        _poolsDenseSize = Config.PoolDenseSizeDefault;
+        _poolHashs = new(Config.PoolsDefault);
+
+        _filtres = new(Config.FiltersDefault);
+        _filerHashes = new(Config.FiltersDefault);
+
+        _masks = new(64);
     }
+
+    public int GetRawEntityOffset(int entity)
+        => entity * _entitiesItemSize;
+
 
     public int NewEntity()
     {
+        int newEntity;
+
+        if (_recycleEntities.Count > 0)
+        {
+            newEntity = _recycleEntities.Dequeue();
+            _entities[GetRawEntityOffset(newEntity) + RawEntityOffests.Gen] *= -1;
+        }
+        else
+        {
+            if (_entitiesCount * _entitiesItemSize == _entities.Length)
+            {
+                int newSize = _entitiesCount * 2;
+                Array.Resize(ref _entities, newSize * _entitiesItemSize);
+
+                foreach(var pool in _pools) 
+                    pool.Resize(newSize);
+            }
+            newEntity = _entitiesCount++;
+            _entities[GetRawEntityOffset(newEntity) + RawEntityOffests.Gen] = 1;
+
+        }
+
+        return newEntity;
+    }
+
+    public void KillEntity(int entity)
+    {
+        if (entity < 0 || entity >= _entitiesCount) return;
+
+        int offset = GetRawEntityOffset(entity); 
+        short componentsCount = _entities[offset + RawEntityOffests.ComponentCount];
+        ref short gen = ref _entities[offset + RawEntityOffests.Gen];
+
+        if (componentsCount > 0)
+            foreach (var pool in _pools)
+                pool.Remove(entity);
+
     }
 }
