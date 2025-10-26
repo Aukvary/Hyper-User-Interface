@@ -46,6 +46,8 @@ public class EcsWorld
 
     private List<Mask> _masks;
 
+    public IReadOnlyList<IEcsPool> Pools => _pools;
+
     public EcsWorld()
     {
         _recycleEntities = new();
@@ -110,4 +112,44 @@ public class EcsWorld
                 pool.Remove(entity);
 
     }
+
+    public EcsPool<T> GetPool<T>() where T: struct
+    {
+        var type = typeof(T);
+
+        if (_poolHashs.TryGetValue(type, out var pool))
+            return (EcsPool<T>)pool;
+
+        var newPool = new EcsPool<T>(this, (short)_pools.Count, Config.PoolDenseSizeDefault); 
+
+        _pools.Add(newPool);
+        _poolHashs[type] = newPool;
+
+        return newPool;
+    }
+
+    public IEcsPool GetPool(int id)
+    {
+        return _pools[id]; 
+    }
+
+    public IEcsPool GetPool(Type type)
+    {
+        return _poolHashs.TryGetValue(type, out var pool) ? pool : null;
+    }
+
+    public int[] GetEntities()
+    {
+        int[] es = new int[_entitiesCount - _recycleEntities.Count];
+
+        for (int i = 0, id = 0, offset = 0; i < _entities.Length; i++, offset += _entitiesItemSize)
+        {
+            if (_entities[offset + RawEntityOffests.Gen] > 0)
+                es[id++] = i;
+        }
+
+        return es;
+    }
+
+
 }

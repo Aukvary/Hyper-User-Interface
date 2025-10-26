@@ -67,14 +67,16 @@
     <Compile Include="src\ecs\components\IEcsAutoReset.cs" />
     <Compile Include="src\ecs\components\IEcsPool.cs" />
     <Compile Include="src\ecs\components\RefAction.cs" />
-    <Compile Include="src\ecs\filters\BitSet.cs" />
+    <Compile Include="src\ecs\entities\EntityArray.cs" />
+    <Compile Include="src\ecs\entities\IReadOnlyEntityArray.cs" />
     <Compile Include="src\ecs\filters\EcsFilter.cs" />
+    <Compile Include="src\ecs\filters\FilterEnumerator.cs" />
+    <Compile Include="src\ecs\filters\Mask.cs" />
     <Compile Include="src\ecs\worlds\EcsWorld.cs" />
     <Compile Include="src\HUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\ecs\entities\" />
     <Folder Include="src\ecs\systems\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
