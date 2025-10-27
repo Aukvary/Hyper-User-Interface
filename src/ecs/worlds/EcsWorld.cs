@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 
 namespace HUI;
 
@@ -44,7 +45,7 @@ public class EcsWorld
     private List<EcsFilter> _filtres;
     private Dictionary<int, EcsFilter> _filerHashes;
 
-    private List<Mask> _masks;
+    private Queue<Mask> _masks;
 
     public IReadOnlyList<IEcsPool> Pools => _pools;
 
@@ -151,5 +152,64 @@ public class EcsWorld
         return es;
     }
 
+    public Mask Filter<T>() where T: struct
+    {
+        var mask = _masks.Count > 0 ? _masks.Dequeue() : new(this);
 
+        return mask.Inc<T>();
+    }
+
+    public void AddComponentRaw(int entity, short poolId)
+    {
+        var offset = GetRawEntityOffset(entity);
+        var dataCount = _entities[offset + RawEntityOffests.ComponentCount];
+        _entities[offset + RawEntityOffests.ComponentCount]++;
+        _entities[offset + RawEntityOffests.Components + dataCount] = poolId;
+    }
+
+    public (EcsFilter, bool) GetFilterInternal(Mask mask, int capacity = 512)
+    {
+        var hash = mask.Hash;
+        var exists = _hashedFilters.TryGetValue(hash, out var filter);
+        if (exists) { return (filter, false); }
+        filter = new EcsFilter(this, mask, capacity, GetWorldSize());
+        _hashedFilters[hash] = filter;
+        _allFilters.Add(filter);
+        // add to component dictionaries for fast compatibility scan.
+        for (int i = 0, iMax = mask.IncludeCount; i < iMax; i++)
+        {
+            var list = _filtersByIncludedComponents[mask.Include[i]];
+            if (list == null)
+            {
+                list = new List<EcsFilter>(8);
+                _filtersByIncludedComponents[mask.Include[i]] = list;
+            }
+            list.Add(filter);
+        }
+        for (int i = 0, iMax = mask.ExcludeCount; i < iMax; i++)
+        {
+            var list = _filtersByExcludedComponents[mask.Exclude[i]];
+            if (list == null)
+            {
+                list = new List<EcsFilter>(8);
+                _filtersByExcludedComponents[mask.Exclude[i]] = list;
+            }
+            list.Add(filter);
+        }
+        // scan exist entities for compatibility with new filter.
+        for (int i = 0, iMax = _entitiesCount; i < iMax; i++)
+        {
+            if (_entities[GetRawEntityOffset(i) + RawEntityOffsets.ComponentsCount] > 0 && IsMaskCompatible(mask, i))
+            {
+                filter.AddEntity(i);
+            }
+        }
+#if DEBUG || LEOECSLITE_WORLD_EVENTS
+        for (int ii = 0, iMax = _eventListeners.Count; ii < iMax; ii++)
+        {
+            _eventListeners[ii].OnFilterCreated(filter);
+        }
+#endif
+        return (filter, true);
+    }
 }

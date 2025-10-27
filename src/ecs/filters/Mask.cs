@@ -19,4 +19,23 @@ public class Mask
         _include = new int[8];
         _exclude = new int[8];
     }
+
+    public Mask Inc<T>() where T: struct
+    {
+        var id = _world.GetPool<T>().Id;
+        _include[_incCount++] = id;
+        return this;
+    }
+
+    public Mask Exc<T>() where T: struct
+    {
+        var id = _world.GetPool<T>().Id;
+        _exclude[_excCount++] = id;
+        return this;
+    }
+
+    public EcsFilter End(int capacity = 512)
+    {
+        throw new System.Exception();
+    }
 }
